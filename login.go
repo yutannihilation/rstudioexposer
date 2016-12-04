@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/rand"
 	"crypto/rsa"
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"math/big"
@@ -74,7 +75,7 @@ func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	form.Add("v", string(v))
+	form.Add("v", string(base64.StdEncoding.EncodeToString(v)))
 
 	fmt.Printf("username: %s, password: %s", username, password)
 
