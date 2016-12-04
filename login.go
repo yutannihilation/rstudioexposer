@@ -65,7 +65,7 @@ func parsePubkey(pubkey string) (*rsa.PublicKey, error) {
 	return &rsa.PublicKey{N: modulus, E: int(publicExponent)}, nil
 }
 
-func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
+func getLoginSessionCookie(username, password string, pubkey *rsa.PublicKey) (*http.Cookie, error) {
 	form := url.Values{}
 	form.Add("persist", "0")
 	form.Add("appUri", "")
@@ -73,7 +73,7 @@ func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
 
 	v, err := rsa.EncryptPKCS1v15(rand.Reader, pubkey, []byte(username+"\n"+password))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	form.Add("v", string(base64.StdEncoding.EncodeToString(v)))
 
@@ -81,7 +81,7 @@ func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
 
 	req, err := http.NewRequest("POST", rStudioLoginURL, strings.NewReader(form.Encode()))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	req.Header.Set("User-Agent", userAgent)
@@ -94,19 +94,23 @@ func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	localhostURL, _ := url.Parse("http://localhost")
+	cookies := jar.Cookies(localhostURL)
+	if len(cookies) != 1 {
+		return nil, fmt.Errorf("Unexpected Cookie: %#v", cookies)
+	}
 
-	setCookieHeader := resp.Header.Get("Set-Cookie")
-	if resp.StatusCode != 302 || setCookieHeader == "" {
+	loginSessionCookie := cookies[0]
+	if loginSessionCookie.Value == "" {
 		fmt.Printf("Requst: %#v\n", resp.Request)
 		fmt.Printf("Response: %#v\n", resp)
 		fmt.Printf("Cookies: %#v\n", jar.Cookies(localhostURL)[0])
-		return "", fmt.Errorf("Failed to login!")
+		return nil, fmt.Errorf("Failed to login!")
 	}
 
-	return setCookieHeader, nil
+	return loginSessionCookie, nil
 }

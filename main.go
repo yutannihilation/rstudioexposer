@@ -8,9 +8,9 @@ const (
 	defaultListenPort = ":80"
 )
 
-func createRedirectHandler(c string) http.HandlerFunc {
+func createRedirectHandler(cookie *http.Cookie) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Set-Cookie", c)
+		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "http://localhost:8787/", 302)
 	}
 }
@@ -20,12 +20,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	setCookieHeader, err := login(defaultUsername, defaultPassword, pubkey)
+	cookie, err := getLoginSessionCookie(defaultUsername, defaultPassword, pubkey)
 	if err != nil {
 		panic(err)
 	}
 
-	http.HandleFunc("/", createRedirectHandler(setCookieHeader))
+	http.HandleFunc("/", createRedirectHandler(cookie))
 
 	http.ListenAndServe(defaultListenPort, nil)
 }
