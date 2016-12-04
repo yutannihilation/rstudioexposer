@@ -95,6 +95,7 @@ func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
 
 	setCookieHeader := resp.Header.Get("Set-Cookie")
 	if resp.StatusCode != 302 || setCookieHeader == "" {
+		fmt.Printf("%#v", resp.Request)
 		fmt.Printf("%#v", resp)
 		fmt.Printf("%#v", jar)
 		return "", fmt.Errorf("Failed to login!")
