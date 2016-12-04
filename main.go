@@ -3,8 +3,9 @@ package main
 import "net/http"
 
 const (
-	userName = "rstudio"
-	passWord = "rstudio"
+	defaultUsername   = "rstudio"
+	defaultPassword   = "rstudio"
+	defaultListenPort = ":80"
 )
 
 func createRedirectHandler(c string) http.HandlerFunc {
@@ -19,12 +20,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	setCookieHeader, err := login(userName, passWord, pubkey)
+	setCookieHeader, err := login(defaultUsername, defaultPassword, pubkey)
 	if err != nil {
 		panic(err)
 	}
 
 	http.HandleFunc("/", createRedirectHandler(setCookieHeader))
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(defaultListenPort, nil)
 }
