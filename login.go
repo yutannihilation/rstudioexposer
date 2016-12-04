@@ -98,11 +98,13 @@ func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
 	}
 	defer resp.Body.Close()
 
+	localhostURL, _ := url.Parse("http://localhost")
+
 	setCookieHeader := resp.Header.Get("Set-Cookie")
 	if resp.StatusCode != 302 || setCookieHeader == "" {
 		fmt.Printf("Requst: %#v\n", resp.Request)
 		fmt.Printf("Response: %#v\n", resp)
-		fmt.Printf("Cookies: %#v\n", jar)
+		fmt.Printf("Cookies: %#v\n", jar.Cookies(localhostURL))
 		return "", fmt.Errorf("Failed to login!")
 	}
 
