@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math/big"
 	"net/http"
+	"net/http/cookiejar"
 	"net/url"
 	"strconv"
 	"strings"
@@ -83,7 +84,10 @@ func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
 	req.Header.Set("User-Agent", userAgent)
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	resp, err := http.DefaultClient.Do(req)
+	jar, _ := cookiejar.New(nil)
+	client := http.Client{Jar: jar}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -92,6 +96,7 @@ func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
 	setCookieHeader := resp.Header.Get("Set-Cookie")
 	if resp.StatusCode != 302 || setCookieHeader == "" {
 		fmt.Printf("%#v", resp)
+		fmt.Printf("%#v", jar)
 		return "", fmt.Errorf("Failed to login!")
 	}
 
