@@ -15,6 +15,7 @@ const (
 func createRedirectHandler(cookie *http.Cookie) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("%#v", r)
+		fmt.Printf("%#v", &r.URL)
 		http.SetCookie(w, cookie)
 		hostParts := strings.Split(r.URL.Host, ":")
 		publicURL := &url.URL{
