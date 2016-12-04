@@ -2,6 +2,9 @@ package main
 
 import "net/http"
 
+import "strings"
+import "net/url"
+
 const (
 	defaultUsername   = "rstudio"
 	defaultPassword   = "rstudio"
@@ -11,7 +14,14 @@ const (
 func createRedirectHandler(cookie *http.Cookie) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, cookie)
-		http.Redirect(w, r, "http://localhost:8787/", 302)
+		hostParts := strings.Split(r.URL.Host, ":")
+		publicURL := &url.URL{
+			Scheme: "http",
+			Host:   hostParts[0] + ":8787",
+			Path:   "/",
+		}
+
+		http.Redirect(w, r, publicURL.String(), 302)
 	}
 }
 
