@@ -4,7 +4,6 @@ import "net/http"
 
 import "strings"
 import "net/url"
-import "fmt"
 
 const (
 	defaultUsername   = "rstudio"
@@ -14,10 +13,8 @@ const (
 
 func createRedirectHandler(cookie *http.Cookie) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("[REQUEST] %#v\n", r)
-		fmt.Printf("[URL]     %#v\n", *r.URL)
 		http.SetCookie(w, cookie)
-		hostParts := strings.Split(r.URL.Host, ":")
+		hostParts := strings.Split(r.Host, ":")
 		publicURL := &url.URL{
 			Scheme: "http",
 			Host:   hostParts[0] + ":8787",
