@@ -76,7 +76,7 @@ func login(username, password string, pubkey *rsa.PublicKey) (string, error) {
 	}
 	form.Add("v", string(v))
 
-	req, err := http.NewRequest("POST", rStudioPubKeyURL, strings.NewReader(form.Encode()))
+	req, err := http.NewRequest("POST", rStudioLoginURL, strings.NewReader(form.Encode()))
 	if err != nil {
 		return "", err
 	}
