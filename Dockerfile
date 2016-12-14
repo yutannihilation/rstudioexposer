@@ -5,3 +5,5 @@ RUN wget -P /usr/local/bin/ https://github.com/yutannihilation/rstudioexposer/re
   && echo '#!/bin/bash \
            \n exec /usr/local/bin/rstudioexposer' \
            > /etc/services.d/rstudioexposer/run
+
+EXPOSE 80
