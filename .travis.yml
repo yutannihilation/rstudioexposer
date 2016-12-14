@@ -1,9 +1,17 @@
 sudo: false
 language: go
 go:
-  - 1.7
-  - tip
-
+- 1.7
+- tip
 script:
-  - go test ./...
-  - go build -o rstudioexposer ./...
+- go test ./...
+- go build -o rstudioexposer ./...
+deploy:
+  provider: releases
+  api_key:
+    secure: 06vOnhF50paQxBR/foIaBNn0OZSlzl0R+FBI3ny+oX9a35DNq64oBZXzdj52/GPN8HJI2YKETMmcHA+1wxBpesOx1K0gBChyu2TPBsT0Unuh6fJhRqf3nwlB/16ieUwUIyyITKoIAvIn2Ns4SkhVEFDRRYcgf/kIzEfb09KxYaSEm/DH3rzbawEWqsp75Zb0e+1qoKffCghlsRozYqvTLPrf+QQ5ilDsz0meI4tYAmCQQ4BoqgdjwrhlN4Hp42du0UIdoJTEPelo658m5jE5bKJA6lm9nANq6UigvpgmEEh75T7uzDXR+VuLe7GikAbuQ6nEF9sxNMxcxEIy3mF8jgl/IVTH+IVdDkxi5GTcE/xAkybiuexM22+BWKF35wf2ZJ2fcBLD7/jPzZwBl7t92abNY7w6uwqJqAxCrjfRxoWFGIwQ7tlWtPeygQ6bSK5JjJLSzQ4W0rT0QvR1gFghRldVxFUrjJia02i/z2o3nCByY0AJKij1c1itKuFLPdsZj1Wh0WR+FpbSlyzDCxCPKMoWYvgzvxLByC0vcfLKh/2Bcf038yFNc6fhtSvUzwTW3btTXO+CuLET+HVrfbMNl4kAtMzgoqjYbejMajQ62ToPZRNdr5ILDZ3qmaAg5ecM7sPbQT0+JsPi4ERXg0zJj8/DTUvPx57GvEud1c9+Hrc=
+  file: rstudioexposer
+  on:
+    repo: yutannihilation/rstudioexposer
+    tags: true
+    go: 1.7
