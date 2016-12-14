@@ -77,8 +77,6 @@ func getLoginSessionCookie(username, password string, pubkey *rsa.PublicKey) (*h
 	}
 	form.Add("v", string(base64.StdEncoding.EncodeToString(v)))
 
-	fmt.Printf("username: %s, password: %s", username, password)
-
 	req, err := http.NewRequest("POST", rStudioLoginURL, strings.NewReader(form.Encode()))
 	if err != nil {
 		return nil, err
@@ -89,8 +87,6 @@ func getLoginSessionCookie(username, password string, pubkey *rsa.PublicKey) (*h
 
 	jar, _ := cookiejar.New(nil)
 	client := http.Client{Jar: jar}
-
-	fmt.Printf("Attempting to login with parameters: %#v", form)
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -106,9 +102,6 @@ func getLoginSessionCookie(username, password string, pubkey *rsa.PublicKey) (*h
 
 	loginSessionCookie := cookies[0]
 	if loginSessionCookie.Value == "" {
-		fmt.Printf("Requst: %#v\n", resp.Request)
-		fmt.Printf("Response: %#v\n", resp)
-		fmt.Printf("Cookies: %#v\n", jar.Cookies(localhostURL)[0])
 		return nil, fmt.Errorf("Failed to login!")
 	}
 
