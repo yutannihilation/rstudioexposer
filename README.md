@@ -6,7 +6,7 @@ Expose RStudio Server to public.
 1. Launch RStudio with rstudioexposer
 
 ```sh
-docker run -d -p 8787:8787 -p 80:80 yutannihilation/rstudio-oepn
+docker run -d -p 8787:8787 -p 80:80 yutannihilation/tidyverse-open
 ```
 
 2. Access to http://localhost/ (not 8787) on web browsers.
