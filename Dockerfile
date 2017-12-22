@@ -1,10 +1,11 @@
-FROM rocker/tidyverse:latest
+FROM golang:alpine as builder
+COPY login.go main.go /tmp/
+WORKDIR /tmp/
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o rstudioexposer .
 
-RUN wget -P /usr/local/bin/ https://github.com/yutannihilation/rstudioexposer/releases/download/v0.0.1/rstudioexposer \
-  && chmod +x /usr/local/bin/rstudioexposer \
-  && mkdir -p /etc/services.d/rstudioexposer \
-  && echo '#!/bin/bash \
-           \n exec /usr/local/bin/rstudioexposer' \
-           > /etc/services.d/rstudioexposer/run
+FROM rocker/tidyverse:latest
+COPY --from=builder /tmp/rstudioexposer /usr/local/bin/rstudioexposer
+RUN mkdir -p /etc/services.d/rstudioexposer
+COPY files/run  /etc/services.d/rstudioexposer/run
 
 EXPOSE 80 8787
