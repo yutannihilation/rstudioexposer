@@ -96,9 +96,6 @@ func getLoginSessionCookie(username, password string, pubkey *rsa.PublicKey) (*h
 
 	localhostURL, _ := url.Parse("http://localhost")
 	cookies := jar.Cookies(localhostURL)
-	if len(cookies) != 1 {
-		return nil, fmt.Errorf("Unexpected Cookie: %#v", cookies)
-	}
 
 	loginSessionCookie := cookies[0]
 	if loginSessionCookie.Value == "" {
